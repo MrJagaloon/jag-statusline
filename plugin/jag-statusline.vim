@@ -24,15 +24,21 @@ function! s:init()
     endif
     let s:initialized = 1
 
-    call s:refresh_statusline()
+    call s:refresh_sections()
     call s:refresh_highlights()
 
-    autocmd! ColorScheme * call s:refresh_highlights()
+    autocmd! ColorScheme * call s:refresh_highlights() | 
+      \ call jagstl#sections#refresh_highlights()
+
+    command! JagstlRefresh call s:refresh_sections() | 
+      \ call s:refresh_highlights() 
+      \ call jagstl#sections#refresh_highlights()
+
 endfunction
 " }}}
-" Script Func: refresh_status_line {{{
+" Script Func: refresh_sections {{{
 " Rebuilds the status line using the defined sections.
-function! s:refresh_statusline()
+function! s:refresh_sections()
     let s:stl = ""
     let l:idx = 0
     while s:is_section(l:idx)
@@ -165,5 +171,4 @@ if exists("g:jagstl#enabled") && g:jagstl#enabled
     call s:init()
 endif
 
-" vim:foldmethod=marker:foldlevel=0
-
+" vim:foldmethod=marker

@@ -1,27 +1,38 @@
 
+function! jagstl#sections#refresh_highlights()
+    if exists('s:mode_in_use') && s:mode_in_use
+        call s:update_mode_highlight()
+    endif
+endfunction
+
 " Section: Mode {{{ ---------------------------------------------------------------------
 " To be use as an entire section in jagstl to enable dynamic colors.
-let g:jagstl#sections#mode = { 
-  \ 'fmt': " %{jagstl#sections#get_mode()} ", 
-  \ 'hi': "jagstl_section_mode" 
-  \ }
-lockvar g:jagstl#sections#mode
+if !exists('jagstl#sections#mode')
+    let jagstl#sections#mode = { 
+      \ 'fmt': " %{jagstl#sections#get_mode()} ", 
+      \ 'hi': "jagstl_section_mode" 
+      \ }
+    lockvar jagstl#sections#mode
+endif
 
-let s:default_modes = { 
-  \ 'normal':       { 'str': 'N',  'fg': 00, 'bg': 02 }, 
-  \ 'insert':       { 'str': 'I',  'fg': 00, 'bg': 04 }, 
-  \ 'replace':      { 'str': 'R',  'fg': 00, 'bg': 01 }, 
-  \ 'visual':       { 'str': 'V',  'fg': 00, 'bg': 05 },
-  \ 'visual_line':  { 'str': 'VL', 'fg': 00, 'bg': 05 },
-  \ 'visual_block': { 'str': 'VB', 'fg': 00, 'bg': 05 }
-  \ }
-lockvar s:default_modes
+if !exists('s:default_modes')
+    let s:default_modes = { 
+      \ 'normal':       { 'str': 'N',  'fg': 00, 'bg': 02 }, 
+      \ 'insert':       { 'str': 'I',  'fg': 00, 'bg': 04 }, 
+      \ 'replace':      { 'str': 'R',  'fg': 00, 'bg': 01 }, 
+      \ 'visual':       { 'str': 'V',  'fg': 00, 'bg': 05 },
+      \ 'visual_line':  { 'str': 'VL', 'fg': 00, 'bg': 05 },
+      \ 'visual_block': { 'str': 'VB', 'fg': 00, 'bg': 05 }
+      \ }
+    lockvar s:default_modes
+endif
 
 let s:curr_mode_key = ""
 
 " Returns a status line section with a format and color indicating the user's
 " current mode. 
 function! jagstl#sections#get_mode()
+    let s:mode_in_use = 1
     call s:update_curr_mode()
     return s:curr_mode['str']
 endfunction
@@ -81,10 +92,6 @@ function! s:get_mode(mode_key)
     endif
     return l:mode
 endfunction
-
-function! s:get_curr_mode_highlight(hl_key)
-    
-endfunction
 " }}}
 " Section: CWD {{{ -------------------------------------------------------------
 " Return the CWD with $HOME replaced by ~. If an argument is passed and is 
@@ -97,9 +104,6 @@ function! jagstl#sections#get_cwd(...)
     endif
     return l:fmtd_cwd
 endfunction
-" }}}
-" Section: Ruler {{{
-" Return a ruler that displays the cursors
 " }}}
 
 " vim:foldmethod=marker
